@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
 
 	private Button toggleButton;
 	private Button closeButton;
+	private Button menuButton;
 	private GarageApplication application;
 	private TextView status;
 
@@ -60,12 +61,21 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		Log.d("ADJ", "onPause");
 		unregisterReceiver(receiver);
 	}
 
+//	@Override
+//	protected void onStop() {
+//		super.onStop();
+//		Log.d("ADJ", "onStop");
+//		onPause();
+//	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.d("ADJ", "onResume");
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(GarageToggleService.INTENT_CLOSE);
 		filter.addAction(GarageToggleService.INTENT_TOGGLE);
@@ -102,15 +112,20 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_main);
 		toggleButton = (Button) findViewById(R.id.toggle_garage_button);
 		closeButton = (Button) findViewById(R.id.close_garage_button);
+		menuButton = (Button) findViewById(R.id.button1);
 		status = (TextView) findViewById(R.id.status);
 
 		closeButton.setOnClickListener(buttonListener);
 		toggleButton.setOnClickListener(buttonListener);
+		menuButton.setOnClickListener(buttonListener);
 
 		application = (GarageApplication) getApplication();
+		
+
 	}
 
 	@Override
@@ -145,6 +160,9 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onClick(View v) {
+			if (v.getId() == R.id.button1) {
+					startActivity(new Intent(MainActivity.this, ConfigurationActivity.class));
+			}
 			if (application.getSelectedAccount() != null) {
 				enableButtons(false);
 				if (v.getId() == R.id.toggle_garage_button) {
@@ -228,6 +246,10 @@ public class MainActivity extends Activity {
 	public void enableButtons(boolean enabled) {
 		toggleButton.setEnabled(enabled);
 		closeButton.setEnabled(enabled);
+	}
+	
+	public void toggle() {
+		getAuthAndDo(GarageToggleService.INTENT_TOGGLE);
 	}
 
 	public void getAuthAndDo(String intent) {

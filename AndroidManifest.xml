@@ -15,9 +15,10 @@
    limitations under the License.
 -->
 <manifest android:versionName="1.0" android:versionCode="1" xmlns:android="http://schemas.android.com/apk/res/android" package="com.blogspot.ryanfx">
+    
     <uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="10" />
+        android:minSdkVersion="8"
+        android:targetSdkVersion="18" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
@@ -34,9 +35,20 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter >
+                 <action android:name="com.blogspot.ryanfx.intent.TOGGLE" />
+                 <category android:name="android.intent.category.DEFAULT"/>       
+            </intent-filter>
         </activity>
         <activity android:name="com.blogspot.ryanfx.activity.ConfigurationActivity"></activity>
         <service android:name="com.blogspot.ryanfx.service.GarageStateService"></service>
         <service android:name="com.blogspot.ryanfx.service.GarageToggleService"></service>
+        <receiver android:name="com.blogspot.ryanfx.activity.ToggleAppWidget" android:exported="true">
+    		<intent-filter>
+        	<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+    		</intent-filter>
+    		<meta-data android:name="android.appwidget.provider"
+              	 android:resource="@xml/toggle_appwidget_info" />
+		</receiver>
     </application>
 </manifest>

@@ -20,13 +20,15 @@ import java.security.KeyStore;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
+
 import com.blogspot.ryanfx.R;
+
 import android.content.Context;
 
 public class GarageSSLSocketFactory {
         
         private static SSLSocketFactory instance;
-        private static final String PASSWORD = "Password!";
+        private static final String PASSWORD = "3311962";
         
         public static SSLSocketFactory getSSLSocketFactory(Context context){
                 if (instance != null)

@@ -16,7 +16,18 @@
 package com.blogspot.ryanfx.service;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
+
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import com.blogspot.ryanfx.application.GarageApplication;
@@ -45,6 +56,20 @@ public abstract class GarageService extends IntentService{
 	public void onCreate() {
 		super.onCreate();
 		application = (GarageApplication) getApplication();
+		HttpsURLConnection.setDefaultHostnameVerifier(new NullHostNameVerifier());
+		SSLContext context;
+		try {
+			context = SSLContext.getInstance("TLS");
+			context.init(null, new X509TrustManager[]{new NullX509TrustManager()}, new SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override
@@ -87,5 +112,30 @@ public abstract class GarageService extends IntentService{
 	}
 
 	protected abstract HttpsURLConnection getRequestFromIntent(String baseString, Intent intent) throws ClientProtocolException, IOException;
+	
+	public class NullHostNameVerifier implements HostnameVerifier {
 
+	    public boolean verify(String hostname, SSLSession session) {
+	        Log.i("RestUtilImpl", "Approving certificate for " + hostname);
+	        return true;
+	    }
+	}
+	
+	private static class NullX509TrustManager implements X509TrustManager {
+		 public void checkClientTrusted(X509Certificate[] chain, String authType)
+		   throws CertificateException {
+			 System.out.println();
+		 }
+
+		 public void checkServerTrusted(X509Certificate[] chain, String authType)
+		   throws CertificateException {
+			 System.out.println();
+		 }
+
+		 public X509Certificate[] getAcceptedIssuers() {
+		  return new X509Certificate[0];
+		 }
+
+		}
+	
 }
